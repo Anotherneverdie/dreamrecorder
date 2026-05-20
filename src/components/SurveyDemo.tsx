@@ -625,7 +625,8 @@ export default function SurveyDemo() {
                           sample.imageUrl.replace('/generated/', '/api/images/'),
                           `dreamrecorder-${sample.id}.png`,
                         )
-                    >
+                      }
+                      >
                       保存
                     </button>
                     <button
