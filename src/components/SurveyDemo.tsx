@@ -747,7 +747,11 @@ export default function SurveyDemo() {
       </main>
 
       <footer className="mt-8 text-center text-xs text-[var(--text-soft)]/80">
-        <Link href="/admin" className="underline hover:text-[var(--text)]">
+        <Link
+          href="/admin"
+          prefetch={false}
+          className="underline hover:text-[var(--text)]"
+        >
           研究员后台 · 导出与统计
         </Link>
       </footer>
