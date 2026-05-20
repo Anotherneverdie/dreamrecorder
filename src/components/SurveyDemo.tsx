@@ -622,10 +622,9 @@ export default function SurveyDemo() {
                       className="btn-ghost flex-1 min-w-[5rem]"
                       onClick={() =>
                         downloadImage(
-                          sample.imageUrl,
+                          sample.imageUrl.replace('/generated/', '/api/images/'),
                           `dreamrecorder-${sample.id}.png`,
                         )
-                      }
                     >
                       保存
                     </button>
