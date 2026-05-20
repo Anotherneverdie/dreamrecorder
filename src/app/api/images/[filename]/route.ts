@@ -2,23 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-// 注意：这里的 params 类型被改成了 Promise，适配 Next.js 15 新特性
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ filename: string }> }
 ) {
-  // 1. 必须使用 await 等待 params 解析完成，否则 Next.js 15 会报 Type Error
+  // 1. 拿到文件名
   const { filename } = await params;
   
-  // 2. 采用标准的 process.cwd() 相对路径定位到你的紫色持久化挂载盘
-  const filePath = path.join(process.cwd(), 'public', 'generated', filename);
+  // 2. 极其粗暴且精准：直接去 Linux 系统的根目录找你挂载的紫色硬盘路径！
+  const filePath = path.join('/src/public/generated', filename);
 
   // 3. 检查文件是否存在
   if (!fs.existsSync(filePath)) {
-    return new NextResponse('Image not found', { status: 404 });
+    return new NextResponse(`Image not found at ${filePath}`, { status: 404 });
   }
 
-  // 4. 读取文件流
+  // 4. 存在就读取并返回
   const fileBuffer = fs.readFileSync(filePath);
   
   return new NextResponse(fileBuffer, {
