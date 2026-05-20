@@ -607,7 +607,7 @@ export default function SurveyDemo() {
                   <div className="relative aspect-video w-full bg-black/5">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={sample.imageUrl}
+                     src={image.imageUrl.replace('/generated/', '/api/images/')}
                       alt={sample.label}
                       className="h-full w-full object-cover"
                     />
