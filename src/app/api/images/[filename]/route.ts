@@ -10,7 +10,8 @@ export async function GET(
   const { filename } = await params;
   
   // 2. 极其粗暴且精准：直接去 Linux 系统的根目录找你挂载的紫色硬盘路径！
-  const filePath = path.join('/src/public/generated', filename);
+// ✅ 改成这个，和 image-gen.ts 保持一致
+const filePath = path.join(process.cwd(), 'public', 'generated', filename);
 
   // 3. 检查文件是否存在
   if (!fs.existsSync(filePath)) {
