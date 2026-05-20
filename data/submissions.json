@@ -1,0 +1,50 @@
+[
+  {
+    "birthYear": 2001,
+    "cityScale": "tier23",
+    "geoRegion": "西南",
+    "geoRegionCities": "重庆、四川、贵州、云南、西藏",
+    "dreamcoreFamiliarity": "expert",
+    "generation": "Z 世代",
+    "fillBlank": {
+      "place": "麦当劳",
+      "space": "儿童乐园",
+      "object": "色彩鲜艳的滑滑梯和五颜六色的泡泡球池子",
+      "light": "柔粉",
+      "sense": "小孩玩闹的声音",
+      "sentence": "在麦当劳的儿童乐园里，我看见色彩鲜艳的滑滑梯和五颜六色的泡泡球池子，光线像柔粉，空气里有小孩玩闹的声音。"
+    },
+    "firstPlace": "白色瓷砖蓝色玻璃的老式大楼",
+    "millenniumItems": [
+      "VHS 录像带",
+      "MP3"
+    ],
+    "millenniumCustom": "",
+    "sensory": {
+      "colors": "柔粉",
+      "light": "过曝 低像素 高噪点",
+      "sounds": "电视故障雪花声"
+    },
+    "dreamcoreKeywords": "无人走廊 温馨感 失落感",
+    "dreamDescription": "熟悉又陌生的无人场景 中国的小学教室",
+    "imageFeedback": [
+      {
+        "sampleId": "sample-a",
+        "label": "你的记忆关键词 · 梦核场景",
+        "prompt": "Authentic real-world photograph taken in China circa 1999-2008, NOT AI art style. Deliberately low fidelity: cheap Y2K-era 0.3-1.3 megapixel CCD camera look, blocky pixels, heavy JPEG compression artifacts, strong coarse film grain, analog scan dust, soft focus, slight motion blur, chromatic aberration, mild overexposure, soft bloom halation, low dynamic range, imperfect white balance. Chinese dreamcore (中式梦核): empty uninhabited liminal spaces, surreal but familiar childhood memory, nostalgic yet unsettling, quiet lonely atmosphere. Low saturation with soft pink, cream yellow, pale macaron tones, warm greenish-yellow cast, faded VHS color palette, foggy soft diffused lighting, childhood memory distortion. Visual reference style: Chinese urban millennium snapshots — blue apartment blocks with laundry on balconies, empty school computer room with old CRT monitors, plastic playground slides on concrete, indoor children's play area with hazy window light, cramped student bedroom with pink patterned sheets, gumball machine close-up, carousel behind metal fence, tiled corridors, external AC units and tangled wires. Mundane documentary snapshot, not staged. Region of China: 西南. Urban context: tier23. Covered provinces: 重庆、四川、贵州、云南、西藏 Scene (empty, no people): In 麦当劳, inside 儿童乐园, 色彩鲜艳的滑滑梯和五颜六色的泡泡球池子 sits alone under 柔粉. Atmosphere: 小孩玩闹的声音. Memory place anchor: 白色瓷砖蓝色玻璃的老式大楼. 在麦当劳的儿童乐园里，我看见色彩鲜艳的滑滑梯和五颜六色的泡泡球池子，光线像柔粉，空气里有小孩玩闹的声音。 Unreasonable but familiar object, childhood distortion, empty playground or residential block feeling. User memory keywords to emphasize (highest priority): 无人走廊 温馨感 失落感, VHS 录像带, MP3 Colors and light from user: 柔粉, 过曝 低像素 高噪点. Sound/atmosphere mood: 电视故障雪花声. Objects: VHS 录像带, MP3. Wide shot or medium shot, deep depth of field, optional slight fisheye or tilted angle, cinematic film still composition, golden hour or overcast soft light. Absolutely NO people, NO faces, NO human silhouettes, NO crowds. Empty scene only. STRICTLY NOT: CGI, 3D render, Blender, Octane, Unreal, illustration, anime, cartoon, digital art, glossy surfaces, 8K sharp, ultra-clean edges, high-detail texture, professional studio photo, HDR, clean commercial photography, text overlay, watermark.",
+        "imageUrl": "/generated/e767cafb-sample-a.png",
+        "like": false
+      },
+      {
+        "sampleId": "sample-b",
+        "label": "你的梦境叙述 · 独家梦核",
+        "prompt": "Authentic real-world photograph taken in China circa 1999-2008, NOT AI art style. Deliberately low fidelity: cheap Y2K-era 0.3-1.3 megapixel CCD camera look, blocky pixels, heavy JPEG compression artifacts, strong coarse film grain, analog scan dust, soft focus, slight motion blur, chromatic aberration, mild overexposure, soft bloom halation, low dynamic range, imperfect white balance. Chinese dreamcore (中式梦核): empty uninhabited liminal spaces, surreal but familiar childhood memory, nostalgic yet unsettling, quiet lonely atmosphere. Low saturation with soft pink, cream yellow, pale macaron tones, warm greenish-yellow cast, faded VHS color palette, foggy soft diffused lighting, childhood memory distortion. Visual reference style: Chinese urban millennium snapshots — blue apartment blocks with laundry on balconies, empty school computer room with old CRT monitors, plastic playground slides on concrete, indoor children's play area with hazy window light, cramped student bedroom with pink patterned sheets, gumball machine close-up, carousel behind metal fence, tiled corridors, external AC units and tangled wires. Mundane documentary snapshot, not staged. Region of China: 西南. Urban context: tier23. Covered provinces: 重庆、四川、贵州、云南、西藏 Scene (empty, no people): Visualize this specific Chinese childhood dream memory as one real photograph: 熟悉又陌生的无人场景 中国的小学教室 Dreamlike liminal space, watercolor bleed at edges, blurry out-of-focus background, endless corridor or foggy field feeling if fits. User memory keywords to emphasize (highest priority): 无人走廊 温馨感 失落感, VHS 录像带, MP3 Colors and light from user: 柔粉, 过曝 低像素 高噪点. Sound/atmosphere mood: 电视故障雪花声. Objects: VHS 录像带, MP3. Wide shot or medium shot, deep depth of field, optional slight fisheye or tilted angle, cinematic film still composition, golden hour or overcast soft light. Absolutely NO people, NO faces, NO human silhouettes, NO crowds. Empty scene only. STRICTLY NOT: CGI, 3D render, Blender, Octane, Unreal, illustration, anime, cartoon, digital art, glossy surfaces, 8K sharp, ultra-clean edges, high-detail texture, professional studio photo, HDR, clean commercial photography, text overlay, watermark.",
+        "imageUrl": "/generated/e767cafb-sample-b.png",
+        "like": false
+      }
+    ],
+    "feedbackNote": "分辨率过高 图片失真",
+    "id": "51fb043d-2f82-4b4d-b792-1f2bbafcf56e",
+    "createdAt": "2026-05-20T11:44:39.396Z"
+  }
+]

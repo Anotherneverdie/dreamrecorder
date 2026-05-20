@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+:root {
+  --cream: #faf3e6;
+  --soft-pink: #f3d6e0;
+  --dusty-rose: #d9b8c4;
+  --muted-yellow: #f5ecd4;
+  --peach: #f8e8e0;
+  --text: #5c4f52;
+  --text-soft: #8a7d80;
+}
+
+body {
+  min-height: 100vh;
+  color: var(--text);
+  font-family: "Songti SC", "STSong", "SimSun", "宋体", serif;
+  background: linear-gradient(
+    165deg,
+    var(--cream) 0%,
+    var(--soft-pink) 38%,
+    var(--muted-yellow) 72%,
+    var(--peach) 100%
+  );
+}
+
+html,
+body {
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.input-field {
+  @apply w-full rounded-xl border border-[var(--dusty-rose)]/40 bg-white/50 px-4 py-3 text-base text-[var(--text)] placeholder:text-[var(--text-soft)]/60 outline-none backdrop-blur-sm transition focus:border-[var(--dusty-rose)]/70 focus:bg-white/65 focus:ring-2 focus:ring-[var(--soft-pink)]/50;
+}
+
+.chip {
+  @apply rounded-full border border-[var(--dusty-rose)]/40 bg-white/40 px-3 py-1.5 text-sm text-[var(--text)] transition hover:bg-white/70;
+}
+
+.chip-active {
+  @apply border-[var(--dusty-rose)] bg-[var(--soft-pink)]/70 shadow-sm;
+}
+
+.btn-primary {
+  @apply rounded-full border border-[var(--dusty-rose)]/50 bg-[var(--soft-pink)]/80 px-8 py-3 text-base tracking-widest text-[var(--text)] shadow-[0_4px_20px_rgba(217,184,196,0.35)] transition hover:bg-[var(--dusty-rose)]/40 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+.btn-ghost {
+  @apply rounded-full border border-[var(--dusty-rose)]/30 bg-white/30 px-6 py-2.5 text-sm tracking-wide text-[var(--text-soft)] transition hover:bg-white/50;
+}
+
+.card {
+  @apply rounded-2xl border border-[var(--dusty-rose)]/30 bg-white/45 p-5 shadow-[inset_0_1px_2px_rgba(255,255,255,0.8)] backdrop-blur-sm;
+}
