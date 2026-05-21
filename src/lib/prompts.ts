@@ -11,8 +11,8 @@ const REALISM_CORE =
 const DREAMCORE_CORE =
   "Chinese dreamcore (中式梦核): empty uninhabited liminal spaces, surreal but familiar childhood memory, nostalgic yet unsettling, quiet lonely atmosphere. Low saturation with soft pink, cream yellow, pale macaron tones, warm greenish-yellow cast, faded VHS color palette, foggy soft diffused lighting, childhood memory distortion.";
 
-const REFERENCE_AESTHETIC =
-  "Visual reference style: Chinese urban millennium snapshots — blue apartment blocks with laundry on balconies, empty school computer room with old CRT monitors, plastic playground slides on concrete, indoor children's play area with hazy window light, cramped student bedroom with pink patterned sheets, gumball machine close-up, carousel behind metal fence, tiled corridors, external AC units and tangled wires. Mundane documentary snapshot, not staged.";
+  const REFERENCE_AESTHETIC =
+  "Visual reference style: Chinese urban millennium documentary snapshot — mundane everyday spaces, not staged. Aesthetic qualities: faded color cast, worn surfaces, ordinary objects slightly out of place, familiar yet uncanny. The specific scene and objects must come entirely from user memory keywords above, not from generic dreamcore tropes.";
 
 const CAMERA =
   "Wide shot or medium shot, deep depth of field, optional slight fisheye or tilted angle, cinematic film still composition, golden hour or overcast soft light.";
@@ -42,6 +42,7 @@ function regionContext(ctx: GenerateContext): string {
 function buildBasePrompt(scene: string, ctx: GenerateContext): string {
   const keywords = userKeywords(ctx);
   return [
+    `HIGHEST PRIORITY — build the entire scene around these user memory keywords: ${keywords || "liminal space, soft pink, cream yellow"}`,  // 
     REALISM_CORE,
     DREAMCORE_CORE,
     REFERENCE_AESTHETIC,

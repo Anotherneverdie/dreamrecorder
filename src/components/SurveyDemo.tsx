@@ -68,6 +68,24 @@ export default function SurveyDemo() {
   const [genErrorCode, setGenErrorCode] = useState("");
   const [isDemoImages, setIsDemoImages] = useState(false);
 
+  type FilterState = { brightness: number; contrast: number; saturate: number; hue: number };
+  const DEFAULT_FILTER: FilterState = { brightness: 100, contrast: 100, saturate: 100, hue: 0 };
+  const PRESETS = [
+    { label: "原片",     values: { brightness: 100, contrast: 100, saturate: 100, hue: 0 } },
+    { label: "褪色胶片", values: { brightness: 105, contrast: 85,  saturate: 55,  hue: 0 } },
+    { label: "冷调梦核", values: { brightness: 95,  contrast: 110, saturate: 70,  hue: 190 } },
+    { label: "暖黄老照片",values: { brightness: 108, contrast: 90, saturate: 65,  hue: 25 } },
+    { label: "梦境漂白", values: { brightness: 120, contrast: 75,  saturate: 40,  hue: 0 } },
+  ];
+  const [filters, setFilters] = useState<Record<string, FilterState>>({});
+  const getFilter = (id: string) => filters[id] ?? DEFAULT_FILTER;
+  const setFilter = (id: string, patch: Partial<FilterState>) =>
+    setFilters((prev) => ({ ...prev, [id]: { ...getFilter(id), ...patch } }));
+  const filterStyle = (id: string) => {
+    const f = getFilter(id);
+    return `brightness(${f.brightness}%) contrast(${f.contrast}%) saturate(${f.saturate}%) hue-rotate(${f.hue}deg)`;
+  };
+
   const generation = getGeneration(form.birthYear);
   const sentence = useMemo(() => buildSentence(form.fillBlank), [form.fillBlank]);
 
@@ -607,26 +625,76 @@ export default function SurveyDemo() {
                   <div className="relative aspect-video w-full bg-black/5">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                     src={sample.imageUrl.replace('/generated/', '/api/images/')}
-
+                      id={`img-${sample.id}`}
+                      src={sample.imageUrl.replace('/generated/', '/api/images/')}
                       alt={sample.label}
                       className="h-full w-full object-cover"
+                      style={{ filter: filterStyle(sample.id) }}
                     />
                     <span className="absolute bottom-2 left-2 rounded bg-white/60 px-2 py-1 text-xs backdrop-blur-sm">
                       {sample.isDemo ? "演示占位" : "AI 生成"} · {sample.label}
                     </span>
                   </div>
+                  <div className="bg-white/20 px-4 py-3 space-y-3">
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        { label: "原片",       values: { brightness: 100, contrast: 100, saturate: 100, hue: 0 } },
+                        { label: "褪色胶片",   values: { brightness: 105, contrast: 85,  saturate: 55,  hue: 0 } },
+                        { label: "冷调梦核",   values: { brightness: 95,  contrast: 110, saturate: 70,  hue: 190 } },
+                        { label: "暖黄老照片", values: { brightness: 108, contrast: 90,  saturate: 65,  hue: 25 } },
+                        { label: "梦境漂白",   values: { brightness: 120, contrast: 75,  saturate: 40,  hue: 0 } },
+                      ].map((p) => (
+                        <button
+                          key={p.label}
+                          type="button"
+                          onClick={() => setFilter(sample.id, p.values)}
+                          className="rounded-full bg-white/50 px-3 py-1 text-xs hover:bg-white/80 transition"
+                        >
+                          {p.label}
+                        </button>
+                      ))}
+                    </div>
+                    {([
+                        { key: "brightness", label: "明度",   min: 50,  max: 150 },
+                        { key: "contrast",   label: "对比度", min: 50,  max: 150 },
+                        { key: "saturate",   label: "饱和度", min: 0,   max: 200 },
+                        { key: "hue",        label: "色相",   min: 0,   max: 360 },
+                    ] as { key: keyof FilterState; label: string; min: number; max: number }[]).map(({ key, label, min, max }) => (
+                      <div key={key} className="flex items-center gap-3 text-xs">
+                        <span className="w-12 shrink-0 text-[var(--text-soft)]">{label}</span>
+                        <input
+                          type="range" min={min} max={max}
+                          value={getFilter(sample.id)[key]}
+                          onChange={(e) => setFilter(sample.id, { [key]: Number(e.target.value) })}
+                          className="flex-1 accent-[var(--dusty-rose)]"
+                        />
+                        <span className="w-8 text-right tabular-nums text-[var(--text-soft)]">
+                          {getFilter(sample.id)[key]}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                   <div className="flex flex-wrap gap-2 bg-white/30 p-3">
                     <button
                       type="button"
                       className="btn-ghost flex-1 min-w-[5rem]"
-                      onClick={() =>
-                        downloadImage(
-                          sample.imageUrl.replace('/generated/', '/api/images/'),
-                          `dreamrecorder-${sample.id}.png`,
-                        )
-                      }
-                      >
+                      onClick={() => {
+                        const imgEl = document.getElementById(`img-${sample.id}`) as HTMLImageElement;
+                        const canvas = document.createElement("canvas");
+                        canvas.width = imgEl.naturalWidth;
+                        canvas.height = imgEl.naturalHeight;
+                        const ctx2d = canvas.getContext("2d")!;
+                        ctx2d.filter = filterStyle(sample.id);
+                        ctx2d.drawImage(imgEl, 0, 0);
+                        canvas.toBlob((blob) => {
+                          if (!blob) return;
+                          const a = document.createElement("a");
+                          a.href = URL.createObjectURL(blob);
+                          a.download = `dreamrecorder-${sample.id}.png`;
+                          a.click();
+                        }, "image/png");
+                      }}
+                    >
                       保存
                     </button>
                     <button
