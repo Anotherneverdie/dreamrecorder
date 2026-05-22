@@ -23,13 +23,7 @@ function getAIClient() {
   return new GoogleGenAI({ apiKey });
 }
 
-// 如果你下方的函数里还留着调用 getAI() 的地方，为了安全起见，我们保留这个壳子，让它直接返回上面的 ai 实例
-function getAI() {
-  if (!process.env.GEMINI_API_KEY) {
-    throw new Error("未配置 GEMINI_API_KEY，请在 Zeabur 环境变量中设置");
-  }
-  return ai;
-}
+
 
 
 
