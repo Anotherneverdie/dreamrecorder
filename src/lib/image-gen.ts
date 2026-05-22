@@ -66,7 +66,9 @@ async function generateWithGoogleGemini(prompt: string): Promise<string> {
 
     for (const part of parts) {
       if (part.inlineData) {
-        if (part.inlineData.data) return part.inlineData.data;
+        if (part.inlineData.data) 
+          // @ts-ignore
+        return part.inlineData.data;
       }
     }
 
