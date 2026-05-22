@@ -14,8 +14,12 @@ export type GeneratedImage = {
 
 const GENERATED_DIR = path.join(process.cwd(), "public", "generated");
 
-// 初始化 Google Gen AI 客户端（会自动读取环境变量中的 GEMINI_API_KEY）
-const ai = new GoogleGenAI({});
+// 初始化 Google Gen AI 客户端（懒加载，避免启动时崩溃）
+function getAI() {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error("未配置 GEMINI_API_KEY，请在 Zeabur 环境变量中设置");
+  return new GoogleGenAI({ apiKey });
+}
 
 // 将 Google 返回的图片数据保存到你现有的本地 data/submissions 类似的持久化目录中
 async function saveImageFromBase64(b64: string, filename: string) {
@@ -38,7 +42,7 @@ async function generateWithGoogleGemini(prompt: string): Promise<string> {
   const fullPrompt = `${prompt}. Avoid these traits: ${DREAMCORE_NEGATIVE_PROMPT}`;
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: model,
       contents: fullPrompt,
     });
