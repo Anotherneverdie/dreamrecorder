@@ -50,7 +50,7 @@ async function generateWithGoogleGemini(prompt: string): Promise<string> {
 
     for (const part of parts) {
       if (part.inlineData) {
-        return part.inlineData.data; // 返回图片的 Base64 数据
+        if (part.inlineData.data) return part.inlineData.data;
       }
     }
 
