@@ -17,8 +17,11 @@ const GENERATED_DIR = path.join(process.cwd(), "public", "generated");
 /**
  * 终极完美初始化：直接在文件顶层实例化，显式传递配置对象，完美绕过 Next.js 线上类型检查
  */
-const apiKey = process.env.GEMINI_API_KEY || "";
-const ai = new GoogleGenAI({ apiKey });
+function getAIClient() {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error("未配置 GEMINI_API_KEY");
+  return new GoogleGenAI({ apiKey });
+}
 
 // 如果你下方的函数里还留着调用 getAI() 的地方，为了安全起见，我们保留这个壳子，让它直接返回上面的 ai 实例
 function getAI() {
@@ -51,7 +54,7 @@ async function generateWithGoogleGemini(prompt: string): Promise<string> {
   const fullPrompt = `${prompt}. Avoid these traits: ${DREAMCORE_NEGATIVE_PROMPT}`;
 
   try {
-    const response = await getAI().models.generateContent({
+    const response = await getAIClient().models.generateContent({
       model: model,
       contents: fullPrompt,
     });
