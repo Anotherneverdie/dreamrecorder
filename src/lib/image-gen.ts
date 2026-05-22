@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { GoogleGenAI } from "@google/genai";
 import { buildPromptVariants, DREAMCORE_NEGATIVE_PROMPT } from "./prompts";
 import type { GenerateContext } from "./prompts-types";
 
@@ -13,18 +14,10 @@ export type GeneratedImage = {
 
 const GENERATED_DIR = path.join(process.cwd(), "public", "generated");
 
-const NEGATIVE_PROMPT = DREAMCORE_NEGATIVE_PROMPT;
+// 初始化 Google Gen AI 客户端（会自动读取环境变量中的 GEMINI_API_KEY）
+const ai = new GoogleGenAI({});
 
-async function saveImageFromUrl(remoteUrl: string, filename: string) {
-  await fs.mkdir(GENERATED_DIR, { recursive: true });
-  const res = await fetch(remoteUrl);
-  if (!res.ok) throw new Error(`下载图片失败: ${res.status}`);
-  const buffer = Buffer.from(await res.arrayBuffer());
-  const filePath = path.join(GENERATED_DIR, filename);
-  await fs.writeFile(filePath, buffer);
-  return `/generated/${filename}`;
-}
-
+// 将 Google 返回的图片数据保存到你现有的本地 data/submissions 类似的持久化目录中
 async function saveImageFromBase64(b64: string, filename: string) {
   await fs.mkdir(GENERATED_DIR, { recursive: true });
   const buffer = Buffer.from(b64, "base64");
@@ -33,87 +26,46 @@ async function saveImageFromBase64(b64: string, filename: string) {
   return `/generated/${filename}`;
 }
 
-function buildRequestBody(model: string, prompt: string) {
-  const imageSize = process.env.IMAGE_SIZE ?? "768x512";
-  const base = {
-    model,
-    prompt: prompt.slice(0, 4000),
-    image_size: imageSize,
-    negative_prompt: NEGATIVE_PROMPT,
-  };
-
-  if (model.includes("FLUX")) {
-    return {
-      ...base,
-      num_inference_steps: Number(process.env.IMAGE_INFERENCE_STEPS ?? 4),
-    };
+// 调用 Google 接口生图
+async function generateWithGoogleGemini(prompt: string): Promise<string> {
+  const model = process.env.IMAGE_MODEL || "gemini-3.1-flash-image-preview";
+  
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error("未配置 GEMINI_API_KEY，请在 Zeabur 后台设置");
   }
 
-  if (model.includes("Qwen")) {
-    return {
-      ...base,
-      num_inference_steps: Number(process.env.IMAGE_INFERENCE_STEPS ?? 20),
-    };
-  }
+  // 融合你原本写好的梦核负向提示词（DREAMCORE_NEGATIVE_PROMPT）
+  const fullPrompt = `${prompt}. Avoid these traits: ${DREAMCORE_NEGATIVE_PROMPT}`;
 
-  return base;
-}
+  try {
+    const response = await ai.models.generateContent({
+      model: model,
+      contents: fullPrompt,
+    });
 
-function extractImageUrl(data: Record<string, unknown>): string | null {
-  const fromData = (data.data as { url?: string; b64_json?: string }[])?.[0];
-  if (fromData?.url) return fromData.url;
-  if (fromData?.b64_json) return `base64:${fromData.b64_json}`;
-
-  const fromImages = (data.images as { url?: string }[])?.[0];
-  if (fromImages?.url) return fromImages.url;
-
-  return null;
-}
-
-async function generateWithSiliconFlow(prompt: string): Promise<string> {
-  const apiKey = process.env.OPENAI_API_KEY;
-  const baseUrl = process.env.OPENAI_BASE_URL ?? "https://api.siliconflow.cn/v1";
-  const model =
-    process.env.IMAGE_MODEL ??
-    process.env.OPENAI_IMAGE_MODEL ??
-    "Kwai-Kolors/Kolors";
-
-  if (!apiKey) {
-    throw new Error("未配置 OPENAI_API_KEY，请在 .env.local 中设置");
-  }
-
-  const res = await fetch(`${baseUrl}/images/generations`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(buildRequestBody(model, prompt)),
-  });
-
-  const data = await res.json();
-  if (!res.ok) {
-    const msg = data?.message ?? data?.error?.message ?? res.statusText;
-    const msgLower = String(msg).toLowerCase();
-    if (msgLower.includes("balance") || msgLower.includes("insufficient")) {
-      throw new Error(
-        "BALANCE_INSUFFICIENT: SiliconFlow 账户余额不足，请前往 cloud.siliconflow.cn 充值后再试",
-      );
+    const parts = response.candidates?.[0]?.content?.parts;
+    if (!parts) {
+      throw new Error("Google AI Studio 未返回任何内容，可能被安全策略拦截。");
     }
-    if (msgLower.includes("disabled")) {
-      throw new Error(
-        `模型 ${model} 已停用。请在 .env.local 将 IMAGE_MODEL 改为 Kwai-Kolors/Kolors 或 Tongyi-MAI/Z-Image-Turbo`,
-      );
+
+    for (const part of parts) {
+      if (part.inlineData) {
+        return part.inlineData.data; // 返回图片的 Base64 数据
+      }
     }
-    throw new Error(`SiliconFlow 生图失败: ${msg}`);
+
+    throw new Error("未在 Google 响应中找到有效图片数据");
+  } catch (error: any) {
+    const msg = String(error?.message || error).toLowerCase();
+    // 如果免费额度超限，抛出特定错误
+    if (msg.includes("quota") || msg.includes("exhausted") || msg.includes("429")) {
+      throw new Error("QUOTA_EXHAUSTED");
+    }
+    throw new Error(`Google 生图失败: ${error?.message || error}`);
   }
-
-  const url = extractImageUrl(data);
-  if (!url) throw new Error("SiliconFlow 未返回图片数据");
-
-  return url;
 }
 
+// 批量生成梦境场景（对应你的前台多场景生成）
 export async function generateDreamcoreImages(
   ctx: GenerateContext,
   batchId: string,
@@ -122,12 +74,12 @@ export async function generateDreamcoreImages(
   const results: GeneratedImage[] = [];
 
   for (const v of variants) {
-    const remote = await generateWithSiliconFlow(v.prompt);
+    // 换成调用 Google 接口
+    const base64Str = await generateWithGoogleGemini(v.prompt);
     const filename = `${batchId}-${v.id}.png`;
 
-    const imageUrl = remote.startsWith("base64:")
-      ? await saveImageFromBase64(remote.slice(7), filename)
-      : await saveImageFromUrl(remote, filename);
+    // 直接保存
+    const imageUrl = await saveImageFromBase64(base64Str, filename);
 
     results.push({
       id: v.id,
